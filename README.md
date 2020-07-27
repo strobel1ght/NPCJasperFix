@@ -10,6 +10,8 @@ Result: for a character like Jas—when the player is married to [Lemurkat's cus
 
 This same bug could potentially happen with other custom NPCs, especially for vanilla and custom NPCs with short names: Sam, Gus, Pam, Alex, Jas... and names like Jo, Eve, Ann, Max, Rob.
 
+This patch mod fixes the problem.
+
 ## Permissions
 This code is available under the MIT license. You are free to use, edit, modify, copy, rename, and re-distribute it with no restrictions. Credit is nice, but **not** required!
 
