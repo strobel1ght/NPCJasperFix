@@ -6,7 +6,7 @@ This is a patch mod for Stardew Valley that corrects a bug in the game code affe
 
 When checking if *any* NPC should load marriage dialogue, the game currently checks if `Game1.player.spouse.Contains(this.Name)` instead of `Game1.player.spouse.Equals(this.Name)`.
 
-Result: for a character like Jas—when the player is married to Lemurkat's custom NPC Jasper—the game checks if `"Jasper".Contains("Jas")` and returns `true` because the "Jas" substring was found. The game will then try to load marriage dialogue for Jas. Because she doesn't have any, it loads the default marriage dialogue string `""` and **Jas will go completely silent, never having any dialogue.**
+Result: for a character like Jas—when the player is married to [Lemurkat's custom NPC Jasper](https://www.nexusmods.com/stardewvalley/mods/5599)—the game checks if `"Jasper".Contains("Jas")` and returns `true` because the "Jas" substring was found. The game will then try to load marriage dialogue for Jas. Because she doesn't have any, it loads the default marriage dialogue string `""` and **Jas will go completely silent, never having any dialogue.**
 
 This same bug could potentially happen with other custom NPCs, especially for vanilla and custom NPCs with short names: Sam, Gus, Pam, Alex, Jas... and names like Jo, Eve, Ann, Max, Rob.
 
@@ -20,7 +20,7 @@ If you are an NPC modder affected by this bug, feel free to copy and include thi
 2. Unzip the folder and open the `manifest.json` file in any text editor
 3. Change the `UniqueID` field (**mandatory**).
 4. Change the `Name` field (important for keeping SMAPI logs unambiguous)
-5. Edit the `Author` and `Description` fields for clarity (optional)
+5. Optional: edit the `Author` and `Description` fields for clarity
 6. Do **not** change the `EntryDll` field. This has to stay the same.
 7. Save the file, rename the containing folder (from `NPCJasperFix/` to whatever you like), and include it with your content pack folder(s) for distribution.
 
