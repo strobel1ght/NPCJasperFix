@@ -18,7 +18,7 @@ This code is available under the MIT license. You are free to use, edit, modify,
 ### NPC (content pack) modders:
 
 If you are an NPC modder affected by this bug, feel free to copy and include this mod alongside your NPC's content packs! You don't need to re-compile the code yourself, either. All you need to do is this:
-1. Download the latest version of the .zip package from the [bin/ folder](https://github.com/Jonqora/NPCJasperFix/tree/master/NPCJasperFix/bin/x86/Debug)
+1. Download the latest version of the .zip package from the [bin/](https://github.com/Jonqora/NPCJasperFix/tree/master/NPCJasperFix/bin/x86/Debug) folder
 2. Unzip the folder and open the `manifest.json` file in any text editor
 3. Change the `UniqueID` field (**mandatory**).
 4. Change the `Name` field (important for keeping SMAPI logs unambiguous)
