@@ -1,0 +1,28 @@
+# user-specific files
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# build results
+# [Dd]ebug/     we actually want these!
+[Rr]elease/
+[Bb]in/*
+[Oo]bj/
+
+# wanted build results
+![Bb]in/[Xx]86/[Dd]ebug/*
+
+# Visual Studio cache/options
+.vs/
+
+# ReSharper
+_ReSharper*/
+*.[Rr]e[Ss]harper
+*.DotSettings.user
+
+# NuGet packages
+*.nupkg
+**/packages/*
+*.nuget.props
+*.nuget.targets
