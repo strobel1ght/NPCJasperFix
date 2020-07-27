@@ -4,9 +4,9 @@ A bug patch C# mod for Lemurkat's Jasper NPC.
 ## Overview
 This is a patch mod for Stardew Valley that corrects a bug in the game code affecting NPCs (especially dialogue). 
 
-When checking if *any* NPC should load marriage dialogue, the game currently checks if `Game1.player.spouse.Contains(this.Name)` instead of `Game1.player.spouse.Equals(this.Name)`.
+**Problem:** when checking if *any* NPC should load marriage dialogue, the game currently checks if `Game1.player.spouse.Contains(this.Name)` instead of `Game1.player.spouse.Equals(this.Name)`.
 
-Result: for a character like Jas—when the player is married to [Lemurkat's custom NPC Jasper](https://www.nexusmods.com/stardewvalley/mods/5599)—the game checks if `"Jasper".Contains("Jas")` and returns `true` because the "Jas" substring was found. The game will then try to load marriage dialogue for Jas. Because she doesn't have any, it loads the default marriage dialogue string `""` and **Jas will go completely silent, never having any dialogue.**
+**Result:** for a character like Jas—when the player is married to [Lemurkat's custom NPC Jasper](https://www.nexusmods.com/stardewvalley/mods/5599)—the game checks if `"Jasper".Contains("Jas")` and returns `true` because the "Jas" substring was found. The game will then try to load marriage dialogue for Jas. Because she doesn't have any, it loads the default marriage dialogue string `""` and **Jas will go completely silent, never having any dialogue.**
 
 This same bug could potentially happen with other custom NPCs, especially for vanilla and custom NPCs with short names: Sam, Gus, Pam, Alex, Jas... and names like Jo, Eve, Ann, Max, Rob.
 
