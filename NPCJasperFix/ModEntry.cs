@@ -1,12 +1,12 @@
 ﻿using System;
-using System.Linq;
 using System.Collections.Generic;
-using Harmony;
-using CIL = Harmony.CodeInstruction;
+using System.Linq;
+using System.Reflection;
+using System.Reflection.Emit;
+using HarmonyLib;
 using StardewModdingAPI;
 using StardewValley;
-using System.Reflection.Emit;
-using System.Reflection;
+using CIL = HarmonyLib.CodeInstruction;
 
 namespace NPCJasperFix
 {
@@ -14,7 +14,6 @@ namespace NPCJasperFix
     public class ModEntry : Mod
     {
         internal static ModEntry Instance { get; private set; }
-        internal HarmonyInstance Harmony { get; private set; }
         public static IMonitor ModMonitor { get; private set; }
 
         /*********
@@ -26,17 +25,17 @@ namespace NPCJasperFix
         {
             // Make resources available.
             Instance = this;
-            ModMonitor = this.Monitor;
-            Harmony = HarmonyInstance.Create(this.ModManifest.UniqueID);
+            ModMonitor = Monitor;
+            Harmony harmony = new Harmony(ModManifest.UniqueID);
 
             // Apply the patch to stop Jas from going silent
-            Harmony.Patch(
+            harmony.Patch(
                 original: helper.Reflection.GetMethod(new NPC(), "loadCurrentDialogue").MethodInfo,
                 transpiler: new HarmonyMethod(AccessTools.Method(typeof(NPCPatch), nameof(NPCPatch.spouseContainsEquals_Transpiler)))
             );
             
             // Apply the related patch to jealousy code
-            Harmony.Patch(
+            harmony.Patch(
                 original: helper.Reflection.GetMethod(new NPC(), "tryToReceiveActiveObject").MethodInfo,
                 transpiler: new HarmonyMethod(AccessTools.Method(typeof(NPCPatch), nameof(NPCPatch.spouseContainsEquals_Transpiler)))
             );
@@ -65,36 +64,36 @@ namespace NPCJasperFix
 
                         if (//callvirt instance string StardewValley.Farmer::get_spouse()
                             codes[i].opcode == OpCodes.Callvirt &&
-                            (MethodInfo)codes[i].operand == typeof(Farmer).GetProperty("spouse").GetGetMethod() &&
+                            (MethodInfo)codes[i].operand == typeof(Farmer).GetProperty("spouse")?.GetGetMethod() &&
                             //ldarg.0
                             codes[i + 1].opcode == OpCodes.Ldarg_0 &&
                             //call instance string StardewValley.Character::get_Name()
                             codes[i + 2].opcode == OpCodes.Call &&
-                            (MethodInfo)codes[i + 2].operand == typeof(Character).GetProperty("Name").GetGetMethod() &&
+                            (MethodInfo)codes[i + 2].operand == typeof(Character).GetProperty("Name")?.GetGetMethod() &&
                             //callvirt instance bool[mscorlib] System.String::Contains(string)
                             codes[i + 3].opcode == OpCodes.Callvirt &&
-                            (MethodInfo)codes[i + 3].operand == typeof(string).GetMethod("Contains", new Type[] { typeof(string) }) )
+                            (MethodInfo)codes[i + 3].operand == typeof(string).GetMethod("Contains", new[] { typeof(string) }) )
                         {
                             // Insert the new replacement instruction
-                            codes[i + 3] = new CIL(OpCodes.Callvirt, typeof(string).GetMethod("Equals", new Type[] { typeof(string) }) );
+                            codes[i + 3] = new CIL(OpCodes.Callvirt, typeof(string).GetMethod("Equals", new[] { typeof(string) }) );
                             patchCount += 1;
                         }
                     }
                     // Log results of the patch attempt
                     if (patchCount == 0)
                     {
-                        ModMonitor.LogOnce($"Couldn't find a code location to apply {nameof(spouseContainsEquals_Transpiler)} patch to {original.DeclaringType.Name}.{original.Name}\n" +
-                            $"This is probably fine. Maybe a game update or another harmony mod already patched it?", LogLevel.Info);
+                        ModMonitor.LogOnce($"Couldn't find a code location to apply {nameof(spouseContainsEquals_Transpiler)} patch to {original.DeclaringType?.Name}.{original.Name}\n" +
+                            "This is probably fine. Maybe a game update or another harmony mod already patched it?", LogLevel.Info);
                     }
                     else //patched at least once
                     {
                         //do stuff
-                        ModMonitor.LogOnce($"Applied bugfix patch to {original.DeclaringType.Name}.{original.Name}: {nameof(spouseContainsEquals_Transpiler)}", LogLevel.Trace);
+                        ModMonitor.LogOnce($"Applied bugfix patch to {original.DeclaringType?.Name}.{original.Name}: {nameof(spouseContainsEquals_Transpiler)}");
 
                         if (patchCount > 1)
                         {
-                            ModMonitor.LogOnce($"Found an unusual number of patch locations for {nameof(spouseContainsEquals_Transpiler)} in {original.DeclaringType.Name}.{original.Name}\n" +
-                            $"This might cause unexpected behaviour. Please share your SMAPI log with the creator of this mod.", LogLevel.Warn);
+                            ModMonitor.LogOnce($"Found an unusual number of patch locations for {nameof(spouseContainsEquals_Transpiler)} in {original.DeclaringType?.Name}.{original.Name}\n" +
+                            "This might cause unexpected behaviour. Please share your SMAPI log with the creator of this mod.", LogLevel.Warn);
                         }
                     }
 
